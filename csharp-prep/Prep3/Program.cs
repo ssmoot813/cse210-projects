@@ -1,9 +1,35 @@
-using System;
+string playAgain = "yes";
 
-class Program
+while (playAgain == "yes")
 {
-    static void Main(string[] args)
+    Random randomGenerator = new Random();
+    int magicNumber = randomGenerator.Next(1, 101);
+
+    int guess;
+    int guessCount = 0;
+
+    Console.Write("What is your guess? ");
+    guess = int.Parse(Console.ReadLine());
+    guessCount++;
+
+    while (guess != magicNumber)
     {
-        Console.WriteLine("Hello Prep3 World!");
+        if (guess > magicNumber)
+        {
+            Console.WriteLine("Lower");
+        }
+        else
+        {
+            Console.WriteLine("Higher");
+        }
+
+        Console.Write("What is your guess? ");
+        guess = int.Parse(Console.ReadLine());
+        guessCount++;
     }
+
+    Console.WriteLine($"You guessed it! It took you {guessCount} guesses.");
+
+    Console.Write("Do you want to play again? ");
+    playAgain = Console.ReadLine();
 }
