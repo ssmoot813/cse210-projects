@@ -1,0 +1,65 @@
+@startuml JournalProgram
+
+class Program {
+  +Main(args : string[]) : void
+}
+
+class Journal {
+  -_entries : List<Entry>
+  +AddEntry(newEntry : Entry) : void
+  +DisplayAll() : void
+  +SaveToFile(filename : string) : void
+  +LoadFromFile(filename : string) : void
+}
+
+class Entry {
+  -_date : string
+  -_promptText : string
+  -_entryText : string
+  +Display() : void
+  +ToFileString() : string
+}
+
+class PromptGenerator {
+  -_prompts : List<string>
+  +GetRandomPrompt() : string
+}
+
+Program --> Journal : calls menu actions on
+Program --> PromptGenerator : asks for a prompt
+Program ..> Entry : creates
+Journal "1" o-- "many" Entry : stores
+
+note right of Journal
+  **Saving:** SaveToFile opens the file with a
+  StreamWriter and writes one line per Entry,
+  using Entry.ToFileString(), which joins
+  date, prompt, and response with "~|~".
+
+  **Loading:** LoadFromFile clears _entries,
+  reads every line with File.ReadAllLines,
+  splits each line on "~|~", builds a new
+  Entry, and adds it to _entries.
+end note
+
+note right of PromptGenerator
+  **Prompt generation:** _prompts holds at
+  least five questions. GetRandomPrompt uses
+  Random to pick an index and returns that
+  prompt string.
+end note
+
+note bottom of Program
+  **Interaction:**
+  1. Program shows the menu in a loop until Quit.
+  2. Write: Program gets a prompt from PromptGenerator,
+     reads the user's response, builds an Entry with
+     the date, prompt, and response, then calls
+     Journal.AddEntry.
+  3. Display: Program calls Journal.DisplayAll, which
+     calls Display on each Entry.
+  4. Save / Load: Program asks for a filename and
+     passes it to Journal.SaveToFile or LoadFromFile.
+end note
+
+@enduml
