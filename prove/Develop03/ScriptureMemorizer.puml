@@ -1,0 +1,85 @@
+@startuml ScriptureMemorizer
+skinparam dpi 200
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 10
+hide empty members
+
+class Program {
+  + Main() : void
+}
+
+class Scripture {
+  - _scripture : List<Word>
+  - _scriptureReference : Reference
+  + Scripture(reference : Reference, text : string)
+  + HideRandomWords(numberToHide : int) : void
+  + IsCompletelyHidden() : bool
+  + GetDisplayText() : string
+}
+
+class Reference {
+  - _book : string
+  - _chapter : int
+  - _startVerse : int
+  - _endVerse : int
+  + Reference(book : string, chapter : int, startVerse : int)
+  + Reference(book : string, chapter : int, startVerse : int, endVerse : int)
+  + GetReference() : string
+}
+
+class Word {
+  - _text : string
+  - _isHidden : bool
+  + Word(word : string)
+  + HideWord() : void
+  + Show() : void
+  + IsHidden() : bool
+  + GetDisplayText() : string
+}
+
+Program --> Scripture : creates and uses
+Scripture "1" *--> "1" Reference : has
+Scripture "1" *--> "*" Word : stores
+
+note right of Program
+  <b>Interaction:</b>
+  1. Main builds a Reference, then passes it and the
+     scripture text to new Scripture(reference, text).
+  2. Loop: clear the console and print
+     scripture.GetDisplayText().
+  3. If scripture.IsCompletelyHidden() is true, the program ends.
+  4. Otherwise prompt "Press Enter or type quit".
+     Typing quit ends the program.
+  5. On Enter, call scripture.HideRandomWords(3)
+     and go back to step 2.
+end note
+
+note right of Scripture
+  <b>Constructor:</b> splits the text string on spaces,
+  creates a new Word for each piece, and adds it
+  to _scripture. Program never sees the list.
+
+  <b>GetDisplayText:</b> joins _scriptureReference.GetReference()
+  with each word's GetDisplayText(), separated by spaces.
+
+  <b>HideRandomWords:</b> uses Random to pick words that
+  are still visible and calls HideWord() on each.
+
+  <b>IsCompletelyHidden:</b> returns true only when
+  IsHidden() is true for every Word.
+end note
+
+note bottom of Reference
+  <b>GetReference:</b> returns "John 3:16" for a single
+  verse, or "Proverbs 3:5-6" when an end verse was given.
+  No prompting happens here; Program passes values in.
+end note
+
+note bottom of Word
+  <b>Constructor:</b> saves the text and sets
+  _isHidden = false (every word starts visible).
+
+  <b>GetDisplayText:</b> returns _text, or underscores
+  of the same length ("~_~_~_~_~_") when hidden.
+end note
+@enduml
