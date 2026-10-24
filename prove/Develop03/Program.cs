@@ -19,7 +19,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        List<Scripture> library = LoadScriptures("scriptures.txt");
+        List<Scripture> library = LoadScriptures("Scriptures.txt");
         Random random = new Random();
         Scripture scripture = library[random.Next(library.Count)];
 
